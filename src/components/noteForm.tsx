@@ -1,23 +1,33 @@
-import { FormEvent, useRef, useState, useContext } from "react"
+import { FormEvent, useRef, useState } from "react"
 import { Button, Col, Form, Row, Stack } from "react-bootstrap"
 import { Link, useNavigate } from "react-router-dom"
 import CreatableReactSelect from "react-select/creatable"
-import { Tag } from "../types"
+import { NoteData, Tag } from "../types"
 import { v4 as uuidV4 } from "uuid"
-import { AppContext } from "../context/appContext"
 
-export function NoteForm() {
-  const appContext = useContext(AppContext)
+type NoteFormProps = {
+  onSubmit: (data: NoteData) => void
+  onAddTag: (tag: Tag) => void
+  availableTags: Tag[]
+} & Partial<NoteData>
 
+export function NoteForm({
+  onSubmit,
+  onAddTag,
+  availableTags,
+  title = "",
+  markdown = "",
+  tags = [],
+}: NoteFormProps) {
   const titleRef = useRef<HTMLInputElement>(null)
   const markdownRef = useRef<HTMLTextAreaElement>(null)
-  const [selectedTags, setSelectedTags] = useState<Tag[]>([])
+  const [selectedTags, setSelectedTags] = useState<Tag[]>(tags)
   const navigate = useNavigate()
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault()
 
-    appContext.onCreateNote({
+    onSubmit({
       title: titleRef.current!.value,
       markdown: markdownRef.current!.value,
       tags: selectedTags,
@@ -33,7 +43,7 @@ export function NoteForm() {
           <Col>
             <Form.Group controlId="title">
               <Form.Label>Title</Form.Label>
-              <Form.Control ref={titleRef} required />
+              <Form.Control ref={titleRef} required defaultValue={title} />
             </Form.Group>
           </Col>
           <Col>
@@ -42,13 +52,13 @@ export function NoteForm() {
               <CreatableReactSelect
                 onCreateOption={(label) => {
                   const newTag = { id: uuidV4(), label }
-                  appContext.addTag(newTag)
+                  onAddTag(newTag)
                   setSelectedTags((prev) => [...prev, newTag])
                 }}
                 value={selectedTags.map((tag) => {
                   return { label: tag.label, value: tag.id }
                 })}
-                options={appContext.tags.map((tag) => {
+                options={availableTags.map((tag) => {
                   return { label: tag.label, value: tag.id }
                 })}
                 onChange={(tags) => {
@@ -65,7 +75,13 @@ export function NoteForm() {
         </Row>
         <Form.Group controlId="markdown">
           <Form.Label>Body</Form.Label>
-          <Form.Control required as="textarea" ref={markdownRef} rows={15} />
+          <Form.Control
+            defaultValue={markdown}
+            required
+            as="textarea"
+            ref={markdownRef}
+            rows={15}
+          />
         </Form.Group>
         <Stack direction="horizontal" gap={2} className="justify-content-end">
           <Button type="submit" variant="primary">

@@ -3,6 +3,8 @@ import { Container } from "react-bootstrap"
 import { HashRouter, Routes, Route, Navigate } from "react-router-dom"
 import AppContextProvider from "./context/appContext"
 import { NewNote } from "./components/newNote"
+import { Note } from "./components/note"
+import { EditNote } from "./components/editNote"
 
 function App() {
   return (
@@ -13,8 +15,8 @@ function App() {
             <Route path="/" element={<h1>Note List</h1>} />
             <Route path="/new" element={<NewNote />} />
             <Route path="/:id" element={<h1>Note Layout</h1>}>
-              <Route index element={<h2>Note</h2>} />
-              <Route path="edit" element={<h2>Edit Note</h2>} />
+              <Route index element={<Note />} />
+              <Route path="edit" element={<EditNote />} />
             </Route>
             <Route path="*" element={<Navigate to="/" />} />
           </Routes>
