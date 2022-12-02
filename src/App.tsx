@@ -5,6 +5,7 @@ import AppContextProvider from "./context/appContext"
 import { NewNote } from "./components/newNote"
 import { Note } from "./components/note"
 import { EditNote } from "./components/editNote"
+import { NoteLayout } from "./components/noteLayout"
 
 function App() {
   return (
@@ -14,7 +15,7 @@ function App() {
           <Routes>
             <Route path="/" element={<h1>Note List</h1>} />
             <Route path="/new" element={<NewNote />} />
-            <Route path="/:id" element={<h1>Note Layout</h1>}>
+            <Route path="/:id" element={<NoteLayout />}>
               <Route index element={<Note />} />
               <Route path="edit" element={<EditNote />} />
             </Route>
