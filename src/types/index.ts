@@ -23,4 +23,4 @@ export interface RawNote extends RawNoteData {
   id: string
 }
 
-export type NoteWithTags = Note | RawNote
+export interface NoteWithTags extends RawNote, Note {}
